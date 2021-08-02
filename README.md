@@ -22,4 +22,4 @@
 ## About the Programmer
 Jonathan Maskew, Purdue University Computer Science Student
 
-Began work on program in December 2020. This is a personal project. I completed it for my own benefit.
+Began work on program in August 2021. This is a personal project. I completed it for my own benefit.
