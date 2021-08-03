@@ -48,10 +48,10 @@ public class SafetyCheck {
         contactsFrame.setLayout(new GridLayout(4,0));
         contactsFrame.setVisible(true);
 
-        JLabel instructions = new JLabel("Insert the phone numbers below, separated by a comma, that you'd like to be contacted in the case you don't check in.");
+        JLabel instructions = new JLabel("Insert the phone numbers below, separated by only a comma, that you'd like to be contacted in the case you don't check in.");
         contactsFrame.add(instructions);
 
-        JLabel example = new JLabel("Formatting example: \"1111111111, 0000000000, ...\"");
+        JLabel example = new JLabel("Formatting example: \"1111111111,0000000000,...\"");
         contactsFrame.add(example);
 
         JTextField phoneNums = new JTextField();
@@ -62,8 +62,26 @@ public class SafetyCheck {
 
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                contactsFrame.dispose();
-                showMainFrame();
+                boolean satisfied = true;
+
+                for (int i = 0; i < phoneNums.getText().length(); i++) {
+                    if (Character.isAlphabetic(phoneNums.getText().charAt(i))) {
+                        JOptionPane.showMessageDialog(null, "Your phone numbers should only contain numbers separated by commas.\nPlease ensure no letters are present.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                        satisfied = false;
+                        break;
+                    } else if (!Character.isDigit(phoneNums.getText().charAt(i)) && phoneNums.getText().charAt(i) != ',') {
+                        JOptionPane.showMessageDialog(null, "Your phone numbers should only contain numbers separated by commas.\nPlease ensure no spaces, parenthesis, or dashes are present.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                        satisfied = false;
+                        break;
+                    }
+                }
+                //parse the string to remove spaces, dashes, parenthesis to put less restrictions on the user?
+                //also check to make sure numbers are 10 digits in length?
+
+                if (satisfied) {
+                    contactsFrame.dispose();
+                    showMainFrame();
+                }
             }
         });
     }
