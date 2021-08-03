@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 public class SafetyCheck {
     public static void main(String[] args) {
@@ -34,12 +35,18 @@ public class SafetyCheck {
         contactsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainFrame.dispose();
-                showContactsFrame();
+                try {
+                    showContactsFrame();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
 
-    public static void showContactsFrame()  {
+    public static void showContactsFrame() throws IOException {
+        File phoneFile = new File("phoneNums.txt");
+
         JFrame contactsFrame = new JFrame();
         contactsFrame.setTitle("Safety Check");
         contactsFrame.setSize(800, 150);
@@ -54,8 +61,12 @@ public class SafetyCheck {
         JLabel example = new JLabel("Formatting example: \"1111111111,0000000000,...\"");
         contactsFrame.add(example);
 
-        JTextField phoneNums = new JTextField();
+        FileReader fr = new FileReader(phoneFile);
+        BufferedReader bfr = new BufferedReader(fr);
+        JTextField phoneNums = new JTextField(bfr.readLine());
         contactsFrame.add(phoneNums);
+        fr.close();
+        bfr.close();
 
         JButton doneButton = new JButton("Done");
         contactsFrame.add(doneButton);
@@ -79,6 +90,25 @@ public class SafetyCheck {
                 //also check to make sure numbers are 10 digits in length?
 
                 if (satisfied) {
+                    FileWriter fw = null;
+                    try {
+                        fw = new FileWriter(phoneFile);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    try {
+                        fw.write(phoneNums.getText());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    try {
+                        fw.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
                     contactsFrame.dispose();
                     showMainFrame();
                 }
