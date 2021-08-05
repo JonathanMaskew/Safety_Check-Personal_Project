@@ -3,34 +3,53 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.Socket;
 
 public class SafetyCheck {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                showMainFrame();
+                try {
+                    showMainFrame();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    public static void showMainFrame()  {
+    public static void showMainFrame() throws IOException {
         JFrame mainFrame = new JFrame();
         mainFrame.setTitle("Safety Check");
-        mainFrame.setSize(600, 150);
+        mainFrame.setSize(600, 250);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        mainFrame.setLayout(new GridLayout(3,0));
+        mainFrame.setLayout(new GridLayout(4,0));
         mainFrame.setVisible(true);
+
+        /*
+        Socket socket = new Socket("localhost", 1234);
+        BufferedReader bfr = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        PrintWriter pw = new PrintWriter(socket.getOutputStream());
+         */
 
         JButton checkInButton = new JButton("Check In Now");
         mainFrame.add(checkInButton);
+
+        JButton requestButton = new JButton("Send Emergency Alert Immediately");
+        mainFrame.add(requestButton);
 
         JLabel bottomText = new JLabel("If you do not check in any day, the people you've specified will be contacted to check on you.");
         bottomText.setHorizontalAlignment(SwingConstants.CENTER);
         mainFrame.add(bottomText);
 
+        Container bottomButtonsContainer = new Container();
+        bottomButtonsContainer.setLayout(new GridLayout(0, 2));
         JButton contactsButton = new JButton("Edit Contacts");
-        mainFrame.add(contactsButton);
+        bottomButtonsContainer.add(contactsButton);
+        JButton timeButton = new JButton("Edit Alert Time");
+        bottomButtonsContainer.add(timeButton);
+        mainFrame.add(bottomButtonsContainer);
 
         contactsButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -110,7 +129,11 @@ public class SafetyCheck {
                     }
 
                     contactsFrame.dispose();
-                    showMainFrame();
+                    try {
+                        showMainFrame();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         });
